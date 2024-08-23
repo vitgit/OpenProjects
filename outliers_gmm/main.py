@@ -5,7 +5,7 @@ from transformers import AutoConfig
 
 from processing_methods import run_w_features_n_centroid
 from utils import seed_everything, create_folder, get_random_questions_from_files, \
-     qa_model_setup, create_chunks, embedding_vectors_from_docs, create_db, \
+     qa_model_setup, create_chunks, create_db, \
      get_random_qa_from_files_SQUAD2, get_random_qa_from_files_mteb_trec_covid
 
 if __name__ == '__main__':
@@ -156,8 +156,9 @@ if __name__ == '__main__':
         chunked_documents = create_chunks(docs_path, chunks_file, chunk_size, chunk_overlap, custom_text_separator,
                                           tokenizer,
                                           use_custom_splitter=use_custom_splitter)
-        embeddings, num_docs = embedding_vectors_from_docs( st_model, chunked_documents, chunk_size, chunk_overlap,
-                                                            custom_text_separator, chunk_file_gen)
+        embeddings = st_model.encode(chunked_documents, convert_to_tensor=False,
+                                            show_progress_bar=True
+                                            )
         print('embeddings shape', embeddings.shape)
         create_db(embeddings, index_path)
 

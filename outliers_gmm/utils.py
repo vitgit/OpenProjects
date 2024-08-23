@@ -74,18 +74,6 @@ def count_documents_tokens_stat(documents, limit):
             text = doc
         count_tokens_stat(text, doc_count, limit)
 
-def embedding_vectors_from_docs(model, docs_path, chunk_size, chunk_overlap, custom_text_separator, chunks_file):
-    chunked_documents = text_splitter(docs_path, chunk_size, chunk_overlap, custom_text_separator, chunks_file)
-
-    if isinstance(chunked_documents[0], str):
-        docs = [doc for doc in chunked_documents]
-    else:
-        docs = [doc.page_content for doc in chunked_documents]
-    show_progress_bar = True
-    embeddings = model.encode(docs, convert_to_tensor=False,
-                              show_progress_bar=show_progress_bar
-                              )
-    return embeddings, len(chunked_documents)
 def create_db(embeddings, index_path):
     dimension = embeddings.shape[1]  # Dimension of embeddings
     index = faiss.IndexFlatL2(dimension)  # Use IndexFlatL2 for Euclidean distance
